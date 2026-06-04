@@ -31,7 +31,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_validUserExactBorderValues_Ok() {
-        User user = new User("login6", "passwd6", 18);
+        User user = new User("login6", "passwd", 18);
         User actual = registrationService.register(user);
         assertNotNull(actual);
     }
