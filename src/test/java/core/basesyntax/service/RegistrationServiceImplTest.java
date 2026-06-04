@@ -72,8 +72,26 @@ class RegistrationServiceImplTest {
     }
 
     @Test
+    void register_emptyPassword_NotOk() {
+        User user = new User("login123", "", 20);
+        assertThrows(RegistrationException.class, () -> registrationService.register(user));
+    }
+
+    @Test
+    void register_fiveCharacterPassword_NotOk() {
+        User user = new User("login123", "abcde", 20);
+        assertThrows(RegistrationException.class, () -> registrationService.register(user));
+    }
+
+    @Test
     void register_underAgeUser_NotOk() {
         User user = new User("login123", "password", 15);
+        assertThrows(RegistrationException.class, () -> registrationService.register(user));
+    }
+
+    @Test
+    void register_negativeAgeUser_NotOk() {
+        User user = new User("login123", "password", -5);
         assertThrows(RegistrationException.class, () -> registrationService.register(user));
     }
 
@@ -81,7 +99,7 @@ class RegistrationServiceImplTest {
     void register_loginAlreadyExists_NotOk() {
         User user1 = new User("login123", "password1", 20);
         User user2 = new User("login123", "password2", 25);
-        registrationService.register(user1);
+        Storage.people.add(user1);
         assertThrows(RegistrationException.class, () -> registrationService.register(user2));
     }
 }

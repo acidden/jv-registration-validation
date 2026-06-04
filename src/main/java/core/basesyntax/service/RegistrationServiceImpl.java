@@ -4,6 +4,9 @@ import core.basesyntax.dao.StorageDao;
 import core.basesyntax.model.User;
 
 public class RegistrationServiceImpl implements RegistrationService {
+    private static final int MIN_AGE = 18;
+    private static final int MIN_LOGIN_LENGTH = 6;
+    private static final int MIN_PASSWORD_LENGTH = 6;
     private final StorageDao storageDao;
 
     public RegistrationServiceImpl(StorageDao storageDao) {
@@ -11,11 +14,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private boolean checkLoginIsValid(String login) {
-        return login != null && login.length() >= 6;
+        return login != null && login.length() >= MIN_LOGIN_LENGTH;
     }
 
     private boolean checkPasswordIsValid(String password) {
-        return password != null && password.length() >= 6;
+        return password != null && password.length() >= MIN_PASSWORD_LENGTH;
     }
 
     @Override
@@ -24,13 +27,15 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new RegistrationException("User can not be null");
         }
         if (!checkLoginIsValid(user.getLogin())) {
-            throw new RegistrationException("Login must be at least 6 character");
+            throw new RegistrationException("Login must be at least"
+                    + MIN_LOGIN_LENGTH + "character");
         }
         if (!checkPasswordIsValid(user.getPassword())) {
-            throw new RegistrationException("Password must be at least 6 character");
+            throw new RegistrationException("Password must be at least "
+                    + MIN_PASSWORD_LENGTH + " character");
         }
-        if (user.getAge() == null || user.getAge() < 18) {
-            throw new RegistrationException("User must be at least 18 years old");
+        if (user.getAge() == null || user.getAge() < MIN_AGE) {
+            throw new RegistrationException("User must be at least " + MIN_AGE + " years old");
         }
         if (storageDao.get(user.getLogin()) != null) {
             throw new RegistrationException("User with this login already exists");
